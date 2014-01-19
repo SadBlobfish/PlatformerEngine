@@ -1,0 +1,125 @@
+NOTICE : If this file appears as one huge line, then congratulations, your text editor sucks.
+Go find a better one. You /can/ /not/ use it to program with because it'll break the file.
+
+This document will attempt to set at least a small standard so that the code looks uniform and neat.
+
+1. Indentation
+
+Indentations are one TAB character, and indentations occur at the opening of a block, which include
+control sturctures (if, while, for, etc), functions, multi-line comments, and table constructors
+written out in code.
+For example, this is how it should look :
+
+local myTable = {
+	aValue = "fish",
+	anotherValue = "chicken",
+};
+
+function getValueFromMyTable(value)
+	if type(value) == "nil" then
+		-- Error out
+	end
+
+	if myTable[value] ~= nil then
+		return myTable[value];
+	else
+		return nil;
+	end
+end
+
+local tableValue = getValueFromMyTable("aValue");
+
+The reason for using tabs should be fairly obvious : it allows clear separation of blocks so that
+you can easily see where they start and stop. The code will get /really/ messy /really/ fast if you
+don't take care to indent! Also, the indentation serves as a good warning as to how complicated your
+code is. If the indentation gets really deep (four or five indentations), this is a clear indication
+that you need to rethink the structure of your code, maybe split it up into several functions.
+
+Also, place some line breaks between sections of code so that it doesn't all look jumbled together.
+
+2. Naming
+
+Names will be written as often as possible in camelCase, not acasslessmethod, nor
+with_separating_underscores. One word names can be left in all lowercase.
+
+For example, good names would be :
+myData
+theImage
+weLikeChickenLots
+file
+
+These aren't so much :
+lol_underscore
+ibetyoucantreadthis
+there_are_too_many_underscores_help_me
+sovariablemuchcodewow
+
+3. Semicolons
+
+Yes, the almightly semicolon gets it's own section. It's short though.
+Semicolons, although made optional by Lua, will be necessary after every statement.
+The rationale is that I'm already too used to doing this, and more importantly,
+other programming languages (Like C and C++) already dictate that you put a semicolon
+at the end of each statement /anyways/. So that's what we'll do.
+
+Statements are mostly variable assignments and functions calls. However, 
+control structures /aren't/ statements! Embedding a semicolon into a condition
+(the "thisIsTrue" in "if thisIsTrue then") /will/ confuse the Lua interpretter and
+do bad things. So don't do it. Also, don't place semicolons after any 'end' keywords.
+
+As such :
+
+local myVariable = 57.249631; -- A statement, so we use a semicolon
+local myTable = {}; -- Also a statement, also a semicolon
+
+-- Notice how that the type() function has no semicolon, because it's in a condition
+if type(myTable) == "table" then -- No semicolons!
+	-- Do the whatever here
+end -- Also no semicolon
+
+function doThing() -- No semicolons here
+	local x = 1;
+	-- do stuff with x
+end -- No semicolons
+
+4. Tables
+
+Oh boy, guys! Tables! This is a long section, mostly because there's a lot to talk about
+in regards to tables. It's not compilcated, there's just a lot of it.
+
+First off, try your hardest not to clutter the global space with tables. It's inevitable
+that a few of our own tables need to be placed in the global space, but many don't need
+to be.
+
+myModule = {
+	doThis = function() ... end,
+	doThat = function() ... end,
+};
+
+This is a good example of what needs to be in the global space. It's a module that's
+meant to be used all over the project, so it needs to be global so that the rest of the
+code can use the functions within it.
+
+However, a table that looks more like this :
+
+myTemporaryTable = {
+	someThing = 42,
+	someOtherThing = 57.2498631,
+};
+
+is something that probably shouldn't be in the global space. It's only going to live for
+a short time, so should be confined to the current scope with the "local" keyword, like
+in the various examples above.
+
+Table elements should be separated by commas, including the last value. It's not strictly
+necessary, but it'll help you remember to add it to a new statement in the table constructor
+if you do.
+
+Another potential problem is nesting our tables too deep, as such :
+
+local myValue = game.aModule.subModule.subSubModule.oneMoreTable.someAction();
+
+The only way to effectively do this is to have a good map of where to place things in mind
+from the start so that everything is organized without needing too much separation. It's
+possible to declare a local refernce value that is short so that it can be referenced but
+remember that this reference isn't a copy, it effectively /becomes/ the other table.
