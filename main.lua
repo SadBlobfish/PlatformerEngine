@@ -19,56 +19,47 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 ]]
 
+engine = {};
+
+engine.player = require("player");
+
 function love.load()
-	player = {
-		verts = {
-			0, 0;
-			0, 50;
-			50, 50;
-			50, 0;
-		},
-		onGround = false,
-	};
+	gravity = 0.125;
+	player = engine.player:new();
 end
 
 function love.draw()
-	love.graphics.polygon("fill", player.verts);
+	love.graphics.polygon("fill", player:getVerts());
 end
 
 function love.update(dt)
 	if love.keyboard.isDown("up") then
-		if not player.onGround then return end
-		player.onGround = false;		
-
-		for i = 2, #player.verts, 2 do
-			player.verts[i] = player.verts[i] - dt * 1000;
-		end
+		if not player:isOnGround() then return end
+		player:setOnGround(false);	
+		player:setYVel(-(dt * 300));
+		player:setY(player:getY() - (dt * 300));
 	end
 
 	if love.keyboard.isDown("left") then
-		if player.verts[1] - (dt * 50) <= 0 then return end
+		if player:getX() - (dt * 50) <= 0 then return end
 
-		for i = 1, #player.verts, 2 do
-			player.verts[i] = player.verts[i] - dt * 50;
-		end
+		player:setX(player:getX() - (dt * 50));
 	end
 
 	if love.keyboard.isDown("right") then
-		if player.verts[5] + (dt * 50) >= 800 then return end
+		if (player:getX() + player:getSize()) + (dt * 50)
+			>= 800 then return end
 
-		for i = 1, #player.verts, 2 do
-			player.verts[i] = player.verts[i] + dt * 50;
-		end
+		player:setX(player:getX() + (dt * 50));
 	end
 
-	if not player.onGround then
-		if player.verts[6] + (dt * 100) >= 550 then
-			player.verts[2] = 600; player.verts[4] = 550; player.verts[6] = 550; player.verts[8] = 600;
-			player.onGround = true;		
+	if not player:isOnGround() then
+		if player:getY() + player:getSize() + (dt * 100) >= 600 then
+			player:setY(600 - player:getSize());
+			player:setOnGround(true);	
 		else
-			for i = 2, #player.verts, 2 do
-				player.verts[i] = player.verts[i] + (dt * 100);
-			end
+			player:setY(player:getY() + player:getYVel());
+			player:setYVel(player:getYVel() + gravity);
 		end
 	end
 end
