@@ -25,7 +25,7 @@ engine.player = require("player");
 
 function love.load()
 	gravity = 0.125;
-	player = engine.player:new();
+	player = engine.player:new(400-32, 300-32, 64);
 end
 
 function love.draw()
